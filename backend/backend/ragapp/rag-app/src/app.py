@@ -2,11 +2,11 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 import os
-from utils.upload_utils import restructure_files
 
 # If you have a function like run_rag_pipeline or your custom retrieval logic:
-from utils.query_utils import retrieve_documents, format_docs, generate_prompt, call_openai, batch_insert
+from utils.query_utils import retrieve_documents, format_docs, generate_prompt, call_openai
 from utils.query_utils import connect_to_zilliz, get_or_create_collection  # adjust imports
+from utils.upload_utils import restructure_files, batch_insert
 # from file_upload import ...
 
 app = Flask(__name__)
@@ -81,6 +81,11 @@ def upload_file():
     # 3. Pass the *full path* into your ingestion logic
     #    If `restructure_files` expects a list, wrap file_path in [ ]
     docs = restructure_files([file_path], uploaded_hashes)
+
+    print(f"Restructured docs: {docs}")
+
+    for doc in docs:
+        print(doc)
 
     # 4. Insert embeddings into your vector store
     batch_insert(collection, docs, embedding_model, BATCH_SIZE=100)

@@ -10,6 +10,7 @@ from decouple import config
 from openai import OpenAI
 import os
 
+
 from dotenv import load_dotenv
 
 # Load environment variables from .env file
@@ -148,58 +149,3 @@ def call_openai(prompt, model):
 
     return (response.choices[0].message.content)
 
-
-# * 
-def batch_insert(collection, dataset, embedding_model, BATCH_SIZE=100):
-    """
-    Inserts data in batches to Milvus/Zilliz.
-
-    dataset[0] = list of chunk titles (strings)
-    dataset[1] = list of chunk contents (strings)
-    """
-
-    # Reconnect if needed
-    connect_to_zilliz()
-
-    total_chunks = len(dataset[0])
-    print(f"Inserting {total_chunks} chunks into Zilliz DB...")
-
-    # Buffers to accumulate until we reach BATCH_SIZE
-    buffer_titles = []
-    buffer_texts = []
-
-    # Helper function to embed all texts in buffer_texts
-    def embed_and_insert():
-        # Embedding each chunk individually
-        embeddings = []
-        for text in buffer_texts:
-            emb = get_embedding(text, model=embedding_model)
-            embeddings.append(emb)  # each emb is length 1536
-
-        # Construct the final data in the order your collection expects
-        insert_data = [
-            buffer_titles,  # field 1 (titles)
-            buffer_texts,   # field 2 (raw text)
-            embeddings      # field 3 (vectors)
-        ]
-
-        # Insert into Milvus/Zilliz
-        collection.insert(insert_data)
-
-    # 1. Loop through each chunk
-    for i in tqdm(range(total_chunks)):
-        buffer_titles.append(dataset[0][i])
-        buffer_texts.append(dataset[1][i])
-
-        # 2. If we reached the BATCH_SIZE, insert
-        if len(buffer_titles) >= BATCH_SIZE:
-            embed_and_insert()
-            # Reset the buffers for the next batch
-            buffer_titles = []
-            buffer_texts = []
-
-    # 3. Handle leftover data (if less than BATCH_SIZE remain)
-    if len(buffer_titles) > 0:
-        embed_and_insert()
-        buffer_titles = []
-        buffer_texts = []
