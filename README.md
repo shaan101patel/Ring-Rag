@@ -1,4 +1,4 @@
-# RAG Application
+# RING RAG Application
 
 ## Overview
 The RAG (Retrieval-Augmented Generation) application is designed to facilitate the retrieval and processing of documents using advanced language models. This application allows users to upload multiple files, which are then processed to extract relevant information and generate responses based on user queries.
