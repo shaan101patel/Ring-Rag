@@ -1,4 +1,4 @@
-# RING RAG Application
+# RING RAG Application (Prototype 3.0)
 
 ## Overview
 
