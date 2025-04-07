@@ -1,5 +1,8 @@
 # RING RAG Application (Prototype 3.0)
 
+## Demo
+https://youtu.be/-_mzu2c2y6w
+
 ## Overview
 
 The **RING RAG** (Retrieval-Augmented Generation) application is an advanced AI-powered system designed to facilitate the retrieval and processing of documents using state-of-the-art language models. It enables users to upload multiple documents, which are then preprocessed, vectorized, and indexed for efficient retrieval. The application is optimized for **query decomposition** and **intelligent chunking** to improve response accuracy and relevance.
